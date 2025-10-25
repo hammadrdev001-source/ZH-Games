@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - ZH Games</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        td {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #333;
+            font-size: 2em;
+            cursor: pointer;
+            text-align: center;
+            vertical-align: middle;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <table id="board">
+        <tr><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td></tr>
+    </table>
+    <p id="status">Player X's turn</p>
+    <button onclick="resetGame()">Restart</button>
+
+    <script>
+        const board = document.getElementById("board");
+        const status = document.getElementById("status");
+        let turn = "X";
+
+        function checkWinner() {
+            const cells = board.getElementsByTagName("td");
+            const combos = [
+                [0,1,2],[3,4,5],[6,7,8], // rows
+                [0,3,6],[1,4,7],[2,5,8], // cols
+                [0,4,8],[2,4,6]          // diagonals
+            ];
+
+            for (let combo of combos) {
+                const [a,b,c] = combo;
+                if(cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    return cells[a].textContent;
+                }
+            }
+            return null;
+        }
+
+        function checkDraw() {
+            const cells = board.getElementsByTagName("td");
+            return [...cells].every(cell => cell.textContent);
+        }
+
+        board.addEventListener("click", function(e) {
+            if(e.target.tagName === "TD" && !e.target.textContent) {
+                e.target.textContent = turn;
+                const winner = checkWinner();
+                if(winner) {
+                    status.textContent = `Player ${winner} wins!`;
+                } else if(checkDraw()) {
+                    status.textContent = "It's a draw!";
+                } else {
+                    turn = turn === "X" ? "O" : "X";
+                    status.textContent = `Player ${turn}'s turn`;
+                }
+            }
+        });
+
+        function resetGame() {
+            const cells = board.getElementsByTagName("td");
+            [...cells].forEach(cell => cell.textContent = "");
+            turn = "X";
+            status.textContent = `Player ${turn}'s turn`;
+        }
+    </script>
+</body>
+</html>
